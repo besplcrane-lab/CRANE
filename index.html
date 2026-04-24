@@ -4,176 +4,433 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crane Fleet Dashboard Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0061ff; --danger: #ff4d4d; --bg: #f4f7fa; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; }
-        
-        /* Sticky Header for Search */
-        .header { 
-            text-align: center; 
-            margin-bottom: 25px; 
-            position: sticky; 
-            top: 0; 
-            background: var(--bg); 
-            padding: 10px 0; 
-            z-index: 1000;
+        :root {
+            --primary: #0061ff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
-        /* Professional Search Bar Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        /* Sticky Header */
+        .header {
+            background: white;
+            padding: 20px 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Controls Section */
+        .controls {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
         .search-wrapper {
-            max-width: 500px;
-            margin: 15px auto;
             position: relative;
+            flex: 1;
+            min-width: 280px;
         }
-        .search-input {
-            width: 100%;
-            padding: 12px 45px;
-            border-radius: 30px;
-            border: 2px solid #ddd;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,97,255,0.2);
-        }
+
         .search-icon {
             position: absolute;
-            left: 18px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #64748b;
+            color: var(--text-muted);
         }
 
-        .counter { background: white; padding: 8px 20px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: bold; color: var(--primary); display: inline-block; margin-top: 10px; }
-        
-        .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; max-width: 1450px; margin: 0 auto; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid var(--primary); transition: 0.3s; }
-        .card-header { background: #f8fafc; padding: 12px 15px; font-weight: 800; font-size: 1.1rem; border-bottom: 1px solid #eee; color: #1e293b; }
-        .card-body { padding: 15px; }
-        .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.82rem; border-bottom: 1px solid #fcfcfc; padding-bottom: 4px; }
-        .label { color: #64748b; font-weight: 500; text-transform: uppercase; font-size: 0.7rem; flex-shrink: 0; }
-        .value { font-weight: 600; color: #0f172a; text-align: right; white-space: nowrap; margin-left: 10px; }
-        .expired { color: var(--danger) !important; font-weight: 800; background: #fff1f2; padding: 2px 4px; border-radius: 3px; }
-        
-        #loading { text-align: center; margin-top: 100px; font-size: 1.2rem; font-weight: bold; color: #94a3b8; }
-        #no-results { text-align: center; display: none; padding: 50px; color: #64748b; font-weight: bold; }
+        .search-input, .filter-select {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        .filter-select {
+            padding-left: 15px;
+            flex: 0 1 250px;
+            cursor: pointer;
+            font-weight: 600;
+            background-color: #f1f5f9;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 97, 255, 0.15);
+        }
+
+        .stats-bar {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .counter {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: #eff6ff;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* Grid Layout */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reg-no {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.025em;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .status-expired { background: #fee2e2; color: #ef4444; }
+        .status-active { background: #dcfce7; color: #10b981; }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #f1f5f9;
+        }
+
+        .info-row.hidden {
+            display: none;
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            padding-right: 10px;
+        }
+
+        .value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: right;
+        }
+
+        .expired-val {
+            color: var(--danger);
+            background: #fff1f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Utilities */
+        #loading {
+            text-align: center;
+            padding: 100px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        #no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px;
+            background: white;
+            border-radius: 20px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .filter-select { flex: 1 1 100%; }
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 style="margin:0; color: #1e293b;">🏗️ CRANE-FLEET Dashboard</h1>
+        <h1>🏗️ CRANE-FLEET <span style="color:var(--primary)">PRO</span></h1>
         
-        <div class="search-wrapper">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search Vehicle Number (e.g. GJ 16)..." onkeyup="filterCards()">
+        <div class="controls">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Registration No..." onkeyup="filterCards()">
+            </div>
+            
+            <select id="expiryFilter" class="filter-select" onchange="filterCards()">
+                <option value="all">📁 All Vehicles</option>
+                <option value="puc">⚠️ PUC Expired</option>
+                <option value="insurance">🛡️ Insurance Expired</option>
+                <option value="fitness">🔧 Fitness Expired</option>
+                <option value="permit">📝 PERMIT / ROAD TAX Expired</option>
+                <option value="form10">📄 FORM-10 Expired</option>
+                <option value="validupto">📅 Permit Valid Up To Expired</option>
+                <option value="any">🚨 Any Expired</option>
+            </select>
         </div>
 
-        <div class="counter" id="totalVehicles">Total Vehicles: Loading...</div>
+        <div class="stats-bar">
+            <div class="counter" id="totalVehicles">Total: --</div>
+            <div class="counter" id="showingCount">Showing: --</div>
+        </div>
     </div>
 
-    <div id="loading">Connecting to Smart API...</div>
-    <div id="no-results">❌ No matching vehicles found.</div>
-    <div class="container" id="card-container"></div>
+    <div id="loading">
+        <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
+        Syncing Fleet Data...
+    </div>
+
+    <div class="container" id="card-container">
+        <div id="no-results">
+            <div style="font-size: 3rem; margin-bottom: 15px;">🔍</div>
+            <h3 style="margin:0">No matching vehicles found</h3>
+            <p style="color:var(--text-muted)">Try changing your search or filter</p>
+        </div>
+    </div>
 
     <script>
         const apiURL = 'https://script.google.com/macros/s/AKfycby3M69HaTJ4MoDdOqfn3HFnSBvbxTdSh1yohD1Oki0vrYwkYcWG75tSjekuIoDjua-gaA/exec';
+        let fleetData = [];
 
         async function initDashboard() {
             try {
                 const response = await fetch(apiURL);
-                const data = await response.json();
-                const container = document.getElementById('card-container');
-                const loader = document.getElementById('loading');
-                const counter = document.getElementById('totalVehicles');
-
-                if (data.length === 0) { loader.innerText = "No data found."; return; }
-
-                loader.style.display = 'none';
-                counter.innerText = `Total Vehicles: ${data.length}`;
-                const headings = Object.keys(data[0]);
-
-                data.forEach(item => {
-                    let cardContent = '';
-                    let isCardExpired = false;
-                    const today = new Date();
-
-                    headings.forEach(key => {
-                        const cleanKey = key.trim().toUpperCase();
-                        if(cleanKey.includes("SR. NO") || cleanKey === "") return;
-
-                        let val = item[key] || "—";
-                        let extraClass = "";
-
-                        const isRegistration = cleanKey.includes("REGISTR"); 
-                        const isExpiryCheck = ["EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10"].some(k => cleanKey.includes(k));
-
-                        if (isExpiryCheck && !isRegistration && val !== "—") {
-                            const d = new Date(val);
-                            if (!isNaN(d.getTime())) {
-                                if (d < today) {
-                                    extraClass = "expired";
-                                    isCardExpired = true;
-                                }
-                                val = d.toLocaleDateString('en-GB'); 
-                            }
-                        } else if (val !== "—") {
-                            const d = new Date(val);
-                            if (!isNaN(d.getTime()) && val.toString().length > 8) {
-                                val = d.toLocaleDateString('en-GB');
-                            }
-                        }
-
-                        if (cleanKey === "REGN NO") return;
-
-                        cardContent += `
-                            <div class="info-row">
-                                <span class="label">${key}:</span>
-                                <span class="value ${extraClass}">${val}</span>
-                            </div>`;
-                    });
-
-                    const regNo = (item["REGN NO"] || "Unknown").toString();
-                    
-                    // Har card ko ek data-attribute de rahe hain search ke liye
-                    container.innerHTML += `
-                        <div class="card" data-regno="${regNo.toUpperCase()}" style="border-top-color: ${isCardExpired ? 'var(--danger)' : 'var(--primary)'}">
-                            <div class="card-header">${regNo}</div>
-                            <div class="card-body">${cardContent}</div>
-                        </div>`;
-                });
+                fleetData = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('totalVehicles').innerText = `Total: ${fleetData.length}`;
+                
+                renderCards(fleetData);
             } catch (error) {
-                document.getElementById('loading').innerText = "❌ Connection Error.";
+                document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data. Please refresh.</span>`;
             }
         }
 
-        // Live Search Logic
-        function filterCards() {
-            const input = document.getElementById('searchInput').value.toUpperCase();
-            const cards = document.getElementsByClassName('card');
+        function renderCards(data) {
+            const container = document.getElementById('card-container');
             const noResults = document.getElementById('no-results');
-            const counter = document.getElementById('totalVehicles');
-            let visibleCount = 0;
+            
+            const cards = container.querySelectorAll('.card');
+            cards.forEach(c => c.remove());
 
-            for (let i = 0; i < cards.length; i++) {
-                const regNo = cards[i].getAttribute('data-regno');
-                if (regNo.includes(input)) {
-                    cards[i].style.display = "";
-                    visibleCount++;
-                } else {
-                    cards[i].style.display = "none";
-                }
+            if (data.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            } else {
+                noResults.style.display = 'none';
             }
 
-            // Update counter during search
-            counter.innerText = `Showing: ${visibleCount} Vehicles`;
+            const today = new Date();
+            const headings = Object.keys(data[0]);
+
+            data.forEach(item => {
+                const regNo = (item["REGN NO"] || "UNKNOWN").toString().toUpperCase();
+                let cardContent = '';
+                let expiredKeys = []; 
+
+                headings.forEach(key => {
+                    const cleanKey = key.trim().toUpperCase();
+                    if (cleanKey.includes("SR. NO") || cleanKey === "REGN NO" || cleanKey === "") return;
+
+                    let val = (item[key] || "—").toString().trim();
+                    let isExpired = false;
+                    let typeClass = "";
+
+                    if (cleanKey.includes("PUC")) typeClass = "type-puc";
+                    else if (cleanKey.includes("INSURANCE")) typeClass = "type-insurance";
+                    else if (cleanKey.includes("FITNESS")) typeClass = "type-fitness";
+                    else if (cleanKey.includes("FORM-10")) typeClass = "type-form10";
+                    else if (cleanKey.includes("VALID UP TO")) typeClass = "type-validupto";
+                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) typeClass = "type-permit";
+                    else typeClass = "type-other";
+
+                    const isCheckable = ["EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
+                    
+                    if (isCheckable && val !== "—") {
+                        if (val.toUpperCase() === "LTT") {
+                            isExpired = false; 
+                        } else {
+                            const d = new Date(val);
+                            if (!isNaN(d.getTime())) {
+                                if (d < today) {
+                                    isExpired = true;
+                                    // Identify specifically which category is expired
+                                    if (cleanKey.includes("PUC")) expiredKeys.push("puc");
+                                    else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
+                                    else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
+                                    else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
+                                    else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
+                                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
+                                }
+                                val = d.toLocaleDateString('en-GB');
+                            }
+                        }
+                    }
+
+                    cardContent += `
+                        <div class="info-row ${typeClass}">
+                            <span class="label">${key}</span>
+                            <span class="value ${isExpired ? 'expired-val' : ''}">${val}</span>
+                        </div>`;
+                });
+
+                // Unique expired keys for filtering
+                const uniqueExpired = [...new Set(expiredKeys)];
+                const isAnyExpired = uniqueExpired.length > 0;
+
+                const cardHtml = `
+                    <div class="card" 
+                         data-regno="${regNo}" 
+                         data-expired-types="${uniqueExpired.join(',')}"
+                         data-any-expired="${isAnyExpired}">
+                        <div class="card-header">
+                            <span class="reg-no">${regNo}</span>
+                            <span class="status-badge ${isAnyExpired ? 'status-expired' : 'status-active'}">
+                                ${isAnyExpired ? 'Action Required' : 'Compliant'}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            ${cardContent}
+                        </div>
+                    </div>`;
+                container.insertAdjacentHTML('beforeend', cardHtml);
+            });
             
-            // Show/Hide no results message
-            noResults.style.display = (visibleCount === 0) ? "block" : "none";
+            updateShowingCount();
+        }
+
+        function filterCards() {
+            const searchTerm = document.getElementById('searchInput').value.toUpperCase();
+            const filterType = document.getElementById('expiryFilter').value;
+            const cards = document.querySelectorAll('.card');
+            const noResults = document.getElementById('no-results');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const regNo = card.getAttribute('data-regno');
+                const expiredTypesStr = card.getAttribute('data-expired-types') || "";
+                const expiredTypes = expiredTypesStr ? expiredTypesStr.split(',') : [];
+                const isAnyExpired = card.getAttribute('data-any-expired') === 'true';
+
+                let matchesSearch = regNo.includes(searchTerm);
+                let matchesFilter = false;
+
+                if (filterType === 'all') {
+                    matchesFilter = true;
+                } else if (filterType === 'any') {
+                    matchesFilter = isAnyExpired;
+                } else {
+                    matchesFilter = expiredTypes.includes(filterType);
+                }
+
+                if (matchesSearch && matchesFilter) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+
+                    const rows = card.querySelectorAll('.info-row');
+                    rows.forEach(row => {
+                        if (filterType === 'all' || filterType === 'any') {
+                            row.classList.remove('hidden');
+                        } else {
+                            if (row.classList.contains(`type-${filterType}`)) {
+                                row.classList.remove('hidden');
+                            } else {
+                                row.classList.add('hidden');
+                            }
+                        }
+                    });
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
+            updateShowingCount(visibleCount);
+        }
+
+        function updateShowingCount(count) {
+            const visible = count !== undefined ? count : document.querySelectorAll('.card:not([style*="display: none"])').length;
+            document.getElementById('showingCount').innerText = `Showing: ${visible}`;
         }
 
         initDashboard();
