@@ -203,6 +203,22 @@
             border-radius: 4px;
         }
 
+        .success-val {
+            color: var(--success);
+            background: #f0fdf4;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Specific style for Registration Date as requested */
+        .reg-date-val {
+            color: #000000;
+            background: #dcfce7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
         /* Utilities */
         #loading {
             text-align: center;
@@ -314,6 +330,7 @@
 
                     let val = (item[key] || "—").toString().trim();
                     let isExpired = false;
+                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE");
                     let typeClass = "";
 
                     if (cleanKey.includes("PUC")) typeClass = "type-puc";
@@ -324,7 +341,7 @@
                     else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) typeClass = "type-permit";
                     else typeClass = "type-other";
 
-                    const isCheckable = ["EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
+                    const isCheckable = ["DATE", "EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
                     
                     if (isCheckable && val !== "—") {
                         if (val.toUpperCase() === "LTT") {
@@ -332,29 +349,41 @@
                         } else {
                             const d = new Date(val);
                             if (!isNaN(d.getTime())) {
-                                if (d < today) {
-                                    isExpired = true;
-                                    // Identify specifically which category is expired
-                                    if (cleanKey.includes("PUC")) expiredKeys.push("puc");
-                                    else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
-                                    else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
-                                    else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
-                                    else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
-                                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
+                                // Expiry check: only if it's NOT a registration date
+                                if (!isRegDate) {
+                                    if (d < today) {
+                                        isExpired = true;
+                                        if (cleanKey.includes("PUC")) expiredKeys.push("puc");
+                                        else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
+                                        else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
+                                        else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
+                                        else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
+                                        else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
+                                    }
                                 }
-                                val = d.toLocaleDateString('en-GB');
+                                // Format to DD/MM/YY
+                                val = d.toLocaleDateString('en-GB', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: '2-digit'
+                                });
                             }
                         }
                     }
 
+                    // Selection of Status Class:
+                    // If it's a Registration Date: Green background, Black text, Bold (reg-date-val)
+                    // If it's Expired: Red background, Red text (expired-val)
+                    // Otherwise: Normal (no class or success-val for active items)
+                    let statusClass = isRegDate ? 'reg-date-val' : (isExpired ? 'expired-val' : '');
+
                     cardContent += `
                         <div class="info-row ${typeClass}">
                             <span class="label">${key}</span>
-                            <span class="value ${isExpired ? 'expired-val' : ''}">${val}</span>
+                            <span class="value ${statusClass}">${val}</span>
                         </div>`;
                 });
 
-                // Unique expired keys for filtering
                 const uniqueExpired = [...new Set(expiredKeys)];
                 const isAnyExpired = uniqueExpired.length > 0;
 
