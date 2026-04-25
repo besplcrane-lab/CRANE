@@ -162,6 +162,7 @@
 
         .status-expired { background: #fee2e2; color: #ef4444; }
         .status-active { background: #dcfce7; color: #10b981; }
+        .status-maintenance { background: #f1f5f9; color: #64748b; }
 
         .card-body {
             padding: 20px;
@@ -197,26 +198,20 @@
         }
 
         .expired-val {
-            color: var(--danger);
-            background: #fff1f2;
+            color: var(--danger) !important;
+            background: #fff1f2 !important;
             padding: 2px 6px;
             border-radius: 4px;
         }
 
-        .success-val {
-            color: var(--success);
-            background: #f0fdf4;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* Specific style for Registration Date as requested */
+        /* Force Black Bold on Green Background for Registration Dates */
         .reg-date-val {
-            color: #000000;
-            background: #dcfce7;
-            padding: 2px 6px;
+            color: #000000 !important;
+            background: #dcfce7 !important;
+            padding: 2px 6px !important;
             border-radius: 4px;
-            font-weight: 800;
+            font-weight: 800 !important;
+            display: inline-block;
         }
 
         /* Utilities */
@@ -323,6 +318,14 @@
                 const regNo = (item["REGN NO"] || "UNKNOWN").toString().toUpperCase();
                 let cardContent = '';
                 let expiredKeys = []; 
+                
+                let isNotWorking = false;
+                for (let key in item) {
+                    if (item[key] && item[key].toString().trim().toUpperCase() === 'Y') {
+                        isNotWorking = true;
+                        break;
+                    }
+                }
 
                 headings.forEach(key => {
                     const cleanKey = key.trim().toUpperCase();
@@ -330,7 +333,8 @@
 
                     let val = (item[key] || "—").toString().trim();
                     let isExpired = false;
-                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE");
+                    // Check specifically if the key is a registration date
+                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE") || cleanKey.includes("REGISTRATION DATE");
                     let typeClass = "";
 
                     if (cleanKey.includes("PUC")) typeClass = "type-puc";
@@ -346,11 +350,13 @@
                     if (isCheckable && val !== "—") {
                         if (val.toUpperCase() === "LTT") {
                             isExpired = false; 
+                        } else if (val.toUpperCase() === "Y") {
+                            isExpired = false;
                         } else {
                             const d = new Date(val);
                             if (!isNaN(d.getTime())) {
-                                // Expiry check: only if it's NOT a registration date
-                                if (!isRegDate) {
+                                // Expiry check ONLY if it is NOT a registration date AND vehicle is working
+                                if (!isRegDate && !isNotWorking) {
                                     if (d < today) {
                                         isExpired = true;
                                         if (cleanKey.includes("PUC")) expiredKeys.push("puc");
@@ -371,11 +377,13 @@
                         }
                     }
 
-                    // Selection of Status Class:
-                    // If it's a Registration Date: Green background, Black text, Bold (reg-date-val)
-                    // If it's Expired: Red background, Red text (expired-val)
-                    // Otherwise: Normal (no class or success-val for active items)
-                    let statusClass = isRegDate ? 'reg-date-val' : (isExpired ? 'expired-val' : '');
+                    // Strict CSS class selection
+                    let statusClass = "";
+                    if (isRegDate) {
+                        statusClass = 'reg-date-val';
+                    } else if (isExpired) {
+                        statusClass = 'expired-val';
+                    }
 
                     cardContent += `
                         <div class="info-row ${typeClass}">
@@ -385,17 +393,18 @@
                 });
 
                 const uniqueExpired = [...new Set(expiredKeys)];
-                const isAnyExpired = uniqueExpired.length > 0;
+                const hasActionRequired = uniqueExpired.length > 0 && !isNotWorking;
 
                 const cardHtml = `
                     <div class="card" 
                          data-regno="${regNo}" 
-                         data-expired-types="${uniqueExpired.join(',')}"
-                         data-any-expired="${isAnyExpired}">
+                         data-expired-types="${isNotWorking ? '' : uniqueExpired.join(',')}"
+                         data-any-expired="${hasActionRequired}"
+                         data-is-working="${!isNotWorking}">
                         <div class="card-header">
                             <span class="reg-no">${regNo}</span>
-                            <span class="status-badge ${isAnyExpired ? 'status-expired' : 'status-active'}">
-                                ${isAnyExpired ? 'Action Required' : 'Compliant'}
+                            <span class="status-badge ${isNotWorking ? 'status-maintenance' : (hasActionRequired ? 'status-expired' : 'status-active')}">
+                                ${isNotWorking ? 'Not Working' : (hasActionRequired ? 'Action Required' : 'Compliant')}
                             </span>
                         </div>
                         <div class="card-body">
@@ -427,7 +436,7 @@
                 if (filterType === 'all') {
                     matchesFilter = true;
                 } else if (filterType === 'any') {
-                    matchesFilter = isAnyExpired;
+                    matchesFilter = isAnyExpired; 
                 } else {
                     matchesFilter = expiredTypes.includes(filterType);
                 }
