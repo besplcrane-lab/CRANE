@@ -25,7 +25,6 @@
             color: var(--text-main);
         }
 
-        /* Sticky Header */
         .header {
             background: white;
             padding: 20px 15px;
@@ -33,7 +32,6 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            text-align: center;
         }
 
         h1 {
@@ -46,20 +44,22 @@
             gap: 10px;
         }
 
-        /* Controls Section */
         .controls {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
             justify-content: center;
         }
 
         .search-wrapper {
             position: relative;
-            flex: 1;
-            min-width: 280px;
+            grid-column: span 1;
+        }
+
+        @media (min-width: 900px) {
+            .search-wrapper { grid-column: span 2; }
         }
 
         .search-icon {
@@ -75,24 +75,28 @@
             padding: 12px 15px 12px 45px;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
             transition: all 0.2s;
             background: #fff;
             box-sizing: border-box;
+            height: 48px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .filter-select {
             padding-left: 15px;
-            flex: 0 1 250px;
             cursor: pointer;
             font-weight: 600;
             background-color: #f1f5f9;
-        }
-
-        .search-input:focus, .filter-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 97, 255, 0.15);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2003/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 40px;
         }
 
         .stats-bar {
@@ -111,7 +115,6 @@
             border-radius: 20px;
         }
 
-        /* Grid Layout */
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -121,7 +124,6 @@
             margin: 0 auto;
         }
 
-        /* Card Styling */
         .card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -130,11 +132,6 @@
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             flex-direction: column;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         .card-header {
@@ -146,14 +143,15 @@
             align-items: center;
         }
 
-        .reg-no {
-            font-weight: 800;
-            font-size: 1.1rem;
-            letter-spacing: -0.025em;
+        .header-left {
+            display: flex;
+            align-items: center;
         }
 
+        .reg-no { font-weight: 800; font-size: 1.15rem; color: #1e293b; }
+        
         .status-badge {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             padding: 4px 8px;
             border-radius: 6px;
             text-transform: uppercase;
@@ -164,9 +162,7 @@
         .status-active { background: #dcfce7; color: #10b981; }
         .status-maintenance { background: #f1f5f9; color: #64748b; }
 
-        .card-body {
-            padding: 20px;
-        }
+        .card-body { padding: 20px; }
 
         .info-row {
             display: flex;
@@ -176,70 +172,32 @@
             border-bottom: 1px dashed #f1f5f9;
         }
 
-        .info-row.hidden {
-            display: none;
-        }
-
-        .info-row:last-child { border-bottom: none; }
+        .info-row.hidden { display: none; }
 
         .label {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
-            padding-right: 10px;
         }
 
         .value {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--text-main);
             text-align: right;
         }
 
-        .expired-val {
-            color: var(--danger) !important;
-            background: #fff1f2 !important;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
+        .expired-val { color: var(--danger) !important; background: #fff1f2 !important; padding: 2px 6px; border-radius: 4px; }
+        .reg-date-val { color: #000000 !important; background: #dcfce7 !important; padding: 2px 6px !important; border-radius: 4px; font-weight: 800 !important; }
+        .mfg-val { color: var(--text-main); font-weight: 800 !important; }
 
-        /* Registration Dates - Green background with Black Bold text */
-        .reg-date-val {
-            color: #000000 !important;
-            background: #dcfce7 !important;
-            padding: 2px 6px !important;
-            border-radius: 4px;
-            font-weight: 800 !important;
-            display: inline-block;
-        }
-
-        /* MFG Date Style - Simple bold text */
-        .mfg-val {
-            color: var(--text-main);
-            font-weight: 800 !important;
-        }
-
-        /* Utilities */
-        #loading {
-            text-align: center;
-            padding: 100px;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        #no-results {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 80px;
-            background: white;
-            border-radius: 20px;
-            display: none;
-        }
+        #loading { text-align: center; padding: 100px; font-weight: 600; color: var(--text-muted); }
+        #no-results { grid-column: 1 / -1; text-align: center; padding: 80px; background: white; border-radius: 20px; display: none; }
 
         @media (max-width: 600px) {
             .container { padding: 15px; }
-            .filter-select { flex: 1 1 100%; }
+            .controls { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -251,18 +209,26 @@
         <div class="controls">
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" class="search-input" placeholder="Search Registration No..." onkeyup="filterCards()">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Reg. No..." onkeyup="filterCards()">
             </div>
             
             <select id="expiryFilter" class="filter-select" onchange="filterCards()">
-                <option value="all">📁 All Vehicles</option>
+                <option value="all">📂 ALL DOCUMENT EXPRIY</option>
                 <option value="puc">⚠️ PUC VALID UP TO</option>
-                <option value="insurance">🛡️ Insurance VALID UP TO</option>
-                <option value="fitness">🔧 Fitness VALID UP TO</option>
+                <option value="insurance">🛡️ INSURANCE VALID UP TO</option>
+                <option value="fitness">🔧 FITNESS VALID UP TO</option>
                 <option value="permit">📝 ROAD TAX VALID UP TO</option>
                 <option value="form10">📄 FORM-10 VALID UP TO</option>
                 <option value="validupto">📅 PERMIT VALID UP TO</option>
-                <option value="any">🚨 ANY DOC VALID UP TO</option>
+                <option value="any">🚨 ANY EXPIRED</option>
+            </select>
+
+            <select id="bodyFilter" class="filter-select" onchange="filterCards()">
+                <option value="all">🚜 ALL BODY TYPES</option>
+            </select>
+
+            <select id="companyFilter" class="filter-select" onchange="filterCards()">
+                <option value="all">🏢 ALL COMPANIES</option>
             </select>
         </div>
 
@@ -272,16 +238,11 @@
         </div>
     </div>
 
-    <div id="loading">
-        <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
-        Syncing Fleet Data...
-    </div>
+    <div id="loading">Syncing Fleet Data...</div>
 
     <div class="container" id="card-container">
         <div id="no-results">
-            <div style="font-size: 3rem; margin-bottom: 15px;">🔍</div>
-            <h3 style="margin:0">No matching vehicles found</h3>
-            <p style="color:var(--text-muted)">Try changing your search or filter</p>
+            <h3>No matching vehicles found</h3>
         </div>
     </div>
 
@@ -294,60 +255,55 @@
                 const response = await fetch(apiURL);
                 fleetData = await response.json();
                 document.getElementById('loading').style.display = 'none';
+                populateFilters(fleetData);
                 document.getElementById('totalVehicles').innerText = `Total: ${fleetData.length}`;
                 renderCards(fleetData);
             } catch (error) {
-                document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data. Please refresh.</span>`;
+                document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data. API Link check karo.</span>`;
             }
         }
 
-        // Helper function to force clean date formatting from any string/ISO
+        function populateFilters(data) {
+            const bodyTypes = new Set();
+            const companies = new Set();
+            data.forEach(item => {
+                if (item["EQUIPMENT BODY"]) bodyTypes.add(item["EQUIPMENT BODY"].toString().trim());
+                if (item["COMPANY"]) companies.add(item["COMPANY"].toString().trim());
+            });
+            const bodyDropdown = document.getElementById('bodyFilter');
+            const companyDropdown = document.getElementById('companyFilter');
+            [...bodyTypes].sort().forEach(type => {
+                if (type) bodyDropdown.innerHTML += `<option value="${type}">${type.toUpperCase()}</option>`;
+            });
+            [...companies].sort().forEach(co => {
+                if (co) companyDropdown.innerHTML += `<option value="${co}">${co.toUpperCase()}</option>`;
+            });
+        }
+
         function formatAnyDate(val, isMfg = false) {
             if (!val || val === "—" || val === "") return "—";
-            
-            // Try to parse the date
             const d = new Date(val);
-            
-            // If invalid date, return original value
             if (isNaN(d.getTime())) return val;
-
-            if (isMfg) {
-                // MM/YYYY format for Manufacturing
-                const mm = String(d.getMonth() + 1).padStart(2, '0');
-                const yyyy = d.getFullYear();
-                return `${mm}/${yyyy}`;
-            } else {
-                // DD/MM/YY format for others
-                const dd = String(d.getDate()).padStart(2, '0');
-                const mm = String(d.getMonth() + 1).padStart(2, '0');
-                const yy = String(d.getFullYear()).slice(-2);
-                return `${dd}/${mm}/${yy}`;
-            }
+            if (isMfg) return `${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getFullYear()).slice(-2)}`;
         }
 
         function renderCards(data) {
             const container = document.getElementById('card-container');
             const noResults = document.getElementById('no-results');
-            
-            const cards = container.querySelectorAll('.card');
-            cards.forEach(c => c.remove());
-
-            if (data.length === 0) {
-                noResults.style.display = 'block';
-                return;
-            } else {
-                noResults.style.display = 'none';
-            }
-
             const today = new Date();
-            const headings = Object.keys(data[0]);
+            container.innerHTML = '';
+            container.appendChild(noResults);
 
             data.forEach(item => {
                 const regNo = (item["REGN NO"] || "UNKNOWN").toString().toUpperCase();
+                const bodyType = (item["EQUIPMENT BODY"] || "").toString();
+                const company = (item["COMPANY"] || "").toString();
+                
                 let cardContent = '';
                 let expiredKeys = []; 
-                
                 let isNotWorking = false;
+
                 for (let key in item) {
                     if (item[key] && item[key].toString().trim().toUpperCase() === 'Y') {
                         isNotWorking = true;
@@ -355,16 +311,17 @@
                     }
                 }
 
-                headings.forEach(key => {
+                Object.keys(item).forEach(key => {
                     const cleanKey = key.trim().toUpperCase();
-                    if (cleanKey.includes("SR. NO") || cleanKey === "REGN NO" || cleanKey === "") return;
+                    const valStr = (item[key] || "").toString();
+                    
+                    if (cleanKey.includes("SR. NO") || cleanKey === "REGN NO" || cleanKey === "LOGO" || 
+                        valStr.includes("http") || cleanKey === "") return;
 
                     let rawVal = (item[key] || "—").toString().trim();
                     let isExpired = false;
-                    
-                    // Identify specific field types
-                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE") || cleanKey.includes("REGISTRATION DATE");
-                    let isMfgDate = cleanKey.includes("YEAR OF MFG") || cleanKey.includes("MFG") || cleanKey.includes("YEAR OF MAKE");
+                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE");
+                    let isMfgDate = cleanKey.includes("YEAR OF MFG") || cleanKey.includes("MFG");
                     
                     let typeClass = "";
                     if (cleanKey.includes("PUC")) typeClass = "type-puc";
@@ -373,115 +330,91 @@
                     else if (cleanKey.includes("FORM-10")) typeClass = "type-form10";
                     else if (cleanKey.includes("VALID UP TO")) typeClass = "type-validupto";
                     else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) typeClass = "type-permit";
-                    else typeClass = "type-other";
 
                     const isCheckable = ["DATE", "EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
-                    
-                    // Logic for Expiry Check
-                    if (isCheckable && rawVal !== "—") {
-                        if (rawVal.toUpperCase() !== "LTT" && rawVal.toUpperCase() !== "Y") {
-                            const d = new Date(rawVal);
-                            if (!isNaN(d.getTime()) && !isRegDate && !isMfgDate && !isNotWorking) {
-                                if (d < today) {
-                                    isExpired = true;
-                                    if (cleanKey.includes("PUC")) expiredKeys.push("puc");
-                                    else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
-                                    else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
-                                    else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
-                                    else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
-                                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
-                                }
+                    if (isCheckable && rawVal !== "—" && rawVal.toUpperCase() !== "LTT" && rawVal.toUpperCase() !== "Y") {
+                        const d = new Date(rawVal);
+                        if (!isNaN(d.getTime()) && !isRegDate && !isMfgDate && !isNotWorking) {
+                            if (d < today) {
+                                isExpired = true;
+                                if (cleanKey.includes("PUC")) expiredKeys.push("puc");
+                                else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
+                                else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
+                                else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
+                                else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
+                                else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
                             }
                         }
                     }
 
-                    // Format the value based on field type
                     let formattedVal = formatAnyDate(rawVal, isMfgDate);
-
-                    // Apply styles
-                    let statusClass = "";
-                    if (isRegDate) statusClass = 'reg-date-val';
-                    else if (isMfgDate) statusClass = 'mfg-val';
-                    else if (isExpired) statusClass = 'expired-val';
-
-                    cardContent += `
-                        <div class="info-row ${typeClass}">
-                            <span class="label">${key}</span>
-                            <span class="value ${statusClass}">${formattedVal}</span>
-                        </div>`;
+                    let statusClass = isRegDate ? 'reg-date-val' : (isMfgDate ? 'mfg-val' : (isExpired ? 'expired-val' : ''));
+                    cardContent += `<div class="info-row ${typeClass}"><span class="label">${key}</span><span class="value ${statusClass}">${formattedVal}</span></div>`;
                 });
 
-                const uniqueExpired = [...new Set(expiredKeys)];
-                const hasActionRequired = uniqueExpired.length > 0 && !isNotWorking;
+                const hasAction = expiredKeys.length > 0 && !isNotWorking;
 
                 const cardHtml = `
                     <div class="card" 
                          data-regno="${regNo}" 
-                         data-expired-types="${isNotWorking ? '' : uniqueExpired.join(',')}"
-                         data-any-expired="${hasActionRequired}"
-                         data-is-working="${!isNotWorking}">
+                         data-body="${bodyType}"
+                         data-company="${company}"
+                         data-expired-types="${isNotWorking ? '' : [...new Set(expiredKeys)].join(',')}"
+                         data-any-expired="${hasAction}">
                         <div class="card-header">
-                            <span class="reg-no">${regNo}</span>
-                            <span class="status-badge ${isNotWorking ? 'status-maintenance' : (hasActionRequired ? 'status-expired' : 'status-active')}">
-                                ${isNotWorking ? 'Not Working' : (hasActionRequired ? 'Action Required' : 'Compliant')}
+                            <div class="header-left"><span class="reg-no">${regNo}</span></div>
+                            <span class="status-badge ${isNotWorking ? 'status-maintenance' : (hasAction ? 'status-expired' : 'status-active')}">
+                                ${isNotWorking ? 'Not Working' : (hasAction ? 'Expired' : 'Active')}
                             </span>
                         </div>
-                        <div class="card-body">
-                            ${cardContent}
-                        </div>
+                        <div class="card-body">${cardContent}</div>
                     </div>`;
                 container.insertAdjacentHTML('beforeend', cardHtml);
             });
-            
             updateShowingCount();
         }
 
         function filterCards() {
-            const searchTerm = document.getElementById('searchInput').value.toUpperCase();
-            const filterType = document.getElementById('expiryFilter').value;
+            const search = document.getElementById('searchInput').value.toUpperCase();
+            const expFilter = document.getElementById('expiryFilter').value;
+            const bodyFilter = document.getElementById('bodyFilter').value;
+            const companyFilter = document.getElementById('companyFilter').value;
             const cards = document.querySelectorAll('.card');
-            const noResults = document.getElementById('no-results');
             let visibleCount = 0;
-
             cards.forEach(card => {
-                const regNo = card.getAttribute('data-regno');
-                const expiredTypesStr = card.getAttribute('data-expired-types') || "";
-                const expiredTypes = expiredTypesStr ? expiredTypesStr.split(',') : [];
-                const isAnyExpired = card.getAttribute('data-any-expired') === 'true';
+                const reg = card.getAttribute('data-regno');
+                const body = card.getAttribute('data-body');
+                const company = card.getAttribute('data-company');
+                const expiredList = card.getAttribute('data-expired-types')?.split(',') || [];
+                const isAnyExp = card.getAttribute('data-any-expired') === 'true';
+                const matchesSearch = reg.includes(search);
+                const matchesBody = (bodyFilter === 'all' || body === bodyFilter);
+                const matchesCompany = (companyFilter === 'all' || company === companyFilter);
+                let matchesExp = (expFilter === 'all') ? true : (expFilter === 'any' ? isAnyExp : expiredList.includes(expFilter));
 
-                let matchesSearch = regNo.includes(searchTerm);
-                let matchesFilter = false;
-
-                if (filterType === 'all') matchesFilter = true;
-                else if (filterType === 'any') matchesFilter = isAnyExpired; 
-                else matchesFilter = expiredTypes.includes(filterType);
-
-                if (matchesSearch && matchesFilter) {
+                if (matchesSearch && matchesBody && matchesCompany && matchesExp) {
                     card.style.display = 'flex';
                     visibleCount++;
                     const rows = card.querySelectorAll('.info-row');
                     rows.forEach(row => {
-                        if (filterType === 'all' || filterType === 'any') row.classList.remove('hidden');
+                        if (expFilter === 'all' || expFilter === 'any') row.classList.remove('hidden');
                         else {
-                            if (row.classList.contains(`type-${filterType}`)) row.classList.remove('hidden');
+                            if (row.classList.contains(`type-${expFilter}`)) row.classList.remove('hidden');
                             else row.classList.add('hidden');
                         }
                     });
-                } else {
-                    card.style.display = 'none';
-                }
+                } else card.style.display = 'none';
             });
-
-            noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
-            updateShowingCount(visibleCount);
+            document.getElementById('no-results').style.display = (visibleCount === 0) ? 'block' : 'none';
+            updateShowingCount();
         }
 
-        function updateShowingCount(count) {
-            const visible = count !== undefined ? count : document.querySelectorAll('.card:not([style*="display: none"])').length;
+        function updateShowingCount() {
+            const visible = document.querySelectorAll('.card:not([style*="display: none"])').length;
             document.getElementById('showingCount').innerText = `Showing: ${visible}`;
         }
 
-        initDashboard();
+        window.onload = initDashboard;
     </script>
 </body>
 </html>
