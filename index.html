@@ -204,7 +204,7 @@
             border-radius: 4px;
         }
 
-        /* Force Black Bold on Green Background for Registration Dates */
+        /* Registration Dates - Green background with Black Bold text */
         .reg-date-val {
             color: #000000 !important;
             background: #dcfce7 !important;
@@ -212,6 +212,12 @@
             border-radius: 4px;
             font-weight: 800 !important;
             display: inline-block;
+        }
+
+        /* MFG Date Style - Simple bold text */
+        .mfg-val {
+            color: var(--text-main);
+            font-weight: 800 !important;
         }
 
         /* Utilities */
@@ -287,13 +293,35 @@
             try {
                 const response = await fetch(apiURL);
                 fleetData = await response.json();
-                
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('totalVehicles').innerText = `Total: ${fleetData.length}`;
-                
                 renderCards(fleetData);
             } catch (error) {
                 document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data. Please refresh.</span>`;
+            }
+        }
+
+        // Helper function to force clean date formatting from any string/ISO
+        function formatAnyDate(val, isMfg = false) {
+            if (!val || val === "—" || val === "") return "—";
+            
+            // Try to parse the date
+            const d = new Date(val);
+            
+            // If invalid date, return original value
+            if (isNaN(d.getTime())) return val;
+
+            if (isMfg) {
+                // MM/YYYY format for Manufacturing
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                return `${mm}/${yyyy}`;
+            } else {
+                // DD/MM/YY format for others
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yy = String(d.getFullYear()).slice(-2);
+                return `${dd}/${mm}/${yy}`;
             }
         }
 
@@ -331,12 +359,14 @@
                     const cleanKey = key.trim().toUpperCase();
                     if (cleanKey.includes("SR. NO") || cleanKey === "REGN NO" || cleanKey === "") return;
 
-                    let val = (item[key] || "—").toString().trim();
+                    let rawVal = (item[key] || "—").toString().trim();
                     let isExpired = false;
-                    // Check specifically if the key is a registration date
+                    
+                    // Identify specific field types
                     let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE") || cleanKey.includes("REGISTRATION DATE");
+                    let isMfgDate = cleanKey.includes("YEAR OF MFG") || cleanKey.includes("MFG") || cleanKey.includes("YEAR OF MAKE");
+                    
                     let typeClass = "";
-
                     if (cleanKey.includes("PUC")) typeClass = "type-puc";
                     else if (cleanKey.includes("INSURANCE")) typeClass = "type-insurance";
                     else if (cleanKey.includes("FITNESS")) typeClass = "type-fitness";
@@ -347,48 +377,37 @@
 
                     const isCheckable = ["DATE", "EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
                     
-                    if (isCheckable && val !== "—") {
-                        if (val.toUpperCase() === "LTT") {
-                            isExpired = false; 
-                        } else if (val.toUpperCase() === "Y") {
-                            isExpired = false;
-                        } else {
-                            const d = new Date(val);
-                            if (!isNaN(d.getTime())) {
-                                // Expiry check ONLY if it is NOT a registration date AND vehicle is working
-                                if (!isRegDate && !isNotWorking) {
-                                    if (d < today) {
-                                        isExpired = true;
-                                        if (cleanKey.includes("PUC")) expiredKeys.push("puc");
-                                        else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
-                                        else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
-                                        else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
-                                        else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
-                                        else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
-                                    }
+                    // Logic for Expiry Check
+                    if (isCheckable && rawVal !== "—") {
+                        if (rawVal.toUpperCase() !== "LTT" && rawVal.toUpperCase() !== "Y") {
+                            const d = new Date(rawVal);
+                            if (!isNaN(d.getTime()) && !isRegDate && !isMfgDate && !isNotWorking) {
+                                if (d < today) {
+                                    isExpired = true;
+                                    if (cleanKey.includes("PUC")) expiredKeys.push("puc");
+                                    else if (cleanKey.includes("INSURANCE")) expiredKeys.push("insurance");
+                                    else if (cleanKey.includes("FITNESS")) expiredKeys.push("fitness");
+                                    else if (cleanKey.includes("FORM-10")) expiredKeys.push("form10");
+                                    else if (cleanKey.includes("VALID UP TO")) expiredKeys.push("validupto");
+                                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) expiredKeys.push("permit");
                                 }
-                                // Format to DD/MM/YY
-                                val = d.toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: '2-digit'
-                                });
                             }
                         }
                     }
 
-                    // Strict CSS class selection
+                    // Format the value based on field type
+                    let formattedVal = formatAnyDate(rawVal, isMfgDate);
+
+                    // Apply styles
                     let statusClass = "";
-                    if (isRegDate) {
-                        statusClass = 'reg-date-val';
-                    } else if (isExpired) {
-                        statusClass = 'expired-val';
-                    }
+                    if (isRegDate) statusClass = 'reg-date-val';
+                    else if (isMfgDate) statusClass = 'mfg-val';
+                    else if (isExpired) statusClass = 'expired-val';
 
                     cardContent += `
                         <div class="info-row ${typeClass}">
                             <span class="label">${key}</span>
-                            <span class="value ${statusClass}">${val}</span>
+                            <span class="value ${statusClass}">${formattedVal}</span>
                         </div>`;
                 });
 
@@ -433,28 +452,19 @@
                 let matchesSearch = regNo.includes(searchTerm);
                 let matchesFilter = false;
 
-                if (filterType === 'all') {
-                    matchesFilter = true;
-                } else if (filterType === 'any') {
-                    matchesFilter = isAnyExpired; 
-                } else {
-                    matchesFilter = expiredTypes.includes(filterType);
-                }
+                if (filterType === 'all') matchesFilter = true;
+                else if (filterType === 'any') matchesFilter = isAnyExpired; 
+                else matchesFilter = expiredTypes.includes(filterType);
 
                 if (matchesSearch && matchesFilter) {
                     card.style.display = 'flex';
                     visibleCount++;
-
                     const rows = card.querySelectorAll('.info-row');
                     rows.forEach(row => {
-                        if (filterType === 'all' || filterType === 'any') {
-                            row.classList.remove('hidden');
-                        } else {
-                            if (row.classList.contains(`type-${filterType}`)) {
-                                row.classList.remove('hidden');
-                            } else {
-                                row.classList.add('hidden');
-                            }
+                        if (filterType === 'all' || filterType === 'any') row.classList.remove('hidden');
+                        else {
+                            if (row.classList.contains(`type-${filterType}`)) row.classList.remove('hidden');
+                            else row.classList.add('hidden');
                         }
                     });
                 } else {
