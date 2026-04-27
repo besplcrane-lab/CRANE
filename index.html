@@ -188,6 +188,7 @@
             text-align: right;
         }
 
+        /* Styles for values */
         .expired-val { color: var(--danger) !important; background: #fff1f2 !important; padding: 2px 6px; border-radius: 4px; }
         .reg-date-val { color: #000000 !important; background: #dcfce7 !important; padding: 2px 6px !important; border-radius: 4px; font-weight: 800 !important; }
         .mfg-val { color: var(--text-main); font-weight: 800 !important; }
@@ -213,7 +214,7 @@
             </div>
             
             <select id="expiryFilter" class="filter-select" onchange="filterCards()">
-                <option value="all">📂 ALL DOCUMENT EXPRIY</option>
+                <option value="all">📂 ALL DOCUMENTS</option>
                 <option value="puc">⚠️ PUC VALID UP TO</option>
                 <option value="insurance">🛡️ INSURANCE VALID UP TO</option>
                 <option value="fitness">🔧 FITNESS VALID UP TO</option>
@@ -304,6 +305,7 @@
                 let expiredKeys = []; 
                 let isNotWorking = false;
 
+                // Check if the vehicle is "Not Working"
                 for (let key in item) {
                     if (item[key] && item[key].toString().trim().toUpperCase() === 'Y') {
                         isNotWorking = true;
@@ -320,7 +322,7 @@
 
                     let rawVal = (item[key] || "—").toString().trim();
                     let isExpired = false;
-                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE");
+                    let isRegDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE") || cleanKey.includes("REGISTRATION DATE");
                     let isMfgDate = cleanKey.includes("YEAR OF MFG") || cleanKey.includes("MFG");
                     
                     let typeClass = "";
@@ -332,9 +334,11 @@
                     else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) typeClass = "type-permit";
 
                     const isCheckable = ["DATE", "EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
-                    if (isCheckable && rawVal !== "—" && rawVal.toUpperCase() !== "LTT" && rawVal.toUpperCase() !== "Y") {
+                    
+                    // Logic fix: Only check for expiry if it's NOT a registration date
+                    if (!isRegDate && isCheckable && rawVal !== "—" && rawVal.toUpperCase() !== "LTT" && rawVal.toUpperCase() !== "Y") {
                         const d = new Date(rawVal);
-                        if (!isNaN(d.getTime()) && !isRegDate && !isMfgDate && !isNotWorking) {
+                        if (!isNaN(d.getTime()) && !isMfgDate && !isNotWorking) {
                             if (d < today) {
                                 isExpired = true;
                                 if (cleanKey.includes("PUC")) expiredKeys.push("puc");
@@ -348,7 +352,17 @@
                     }
 
                     let formattedVal = formatAnyDate(rawVal, isMfgDate);
-                    let statusClass = isRegDate ? 'reg-date-val' : (isMfgDate ? 'mfg-val' : (isExpired ? 'expired-val' : ''));
+                    
+                    // Priority CSS class assignment
+                    let statusClass = "";
+                    if (isRegDate) {
+                        statusClass = 'reg-date-val'; // Strict green for registration
+                    } else if (isMfgDate) {
+                        statusClass = 'mfg-val';
+                    } else if (isExpired) {
+                        statusClass = 'expired-val'; // Red for others if expired
+                    }
+
                     cardContent += `<div class="info-row ${typeClass}"><span class="label">${key}</span><span class="value ${statusClass}">${formattedVal}</span></div>`;
                 });
 
