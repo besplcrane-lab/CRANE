@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crane Fleet Dashboard Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0061ff;
@@ -27,121 +27,9 @@
             overflow-x: hidden;
         }
 
-        /* --- Login Styles --- */
-        #login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #f0f4f8 url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="%23cbd5e1" fill-opacity="0.5"/></svg>');
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 400px;
-            text-align: left;
-            position: relative;
-        }
-
-        .login-logos {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .login-logos img {
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .login-card h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #001529;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-            transition: border 0.2s;
-        }
-
-        .login-input:focus {
-            border-color: var(--primary);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: #2b3a8e; /* Matches the screenshot blue */
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: background 0.2s;
-        }
-
-        .login-btn:hover {
-            background: #1e296b;
-        }
-
-        .login-footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .login-footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .user-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #1e293b;
-        }
-
         /* --- Dashboard Styles --- */
         #main-dashboard {
-            display: none;
+            display: block; /* Sidhe visible rahega ab */
         }
 
         .header {
@@ -165,7 +53,7 @@
             margin: 0 auto;
             display: flex;
             align-items: center;
-            justify-content: space-around;
+            justify-content: center; /* Center align kar diya kyunki ab sirf main groups hain */
             flex-wrap: wrap;
             gap: 20px;
             padding: 0 15px;
@@ -174,14 +62,7 @@
         .main-company-logos {
             display: flex;
             gap: 25px;
-            border-right: 2px solid #e2e8f0;
-            padding-right: 25px;
-        }
-
-        .client-logos {
-            display: flex;
-            gap: 20px;
-            align-items: center;
+            padding-right: 0; /* Border aur extra padding hata di hai */
         }
 
         .logo-item {
@@ -359,7 +240,7 @@
         .val-expired { color: var(--danger); background: #fee2e2; padding: 2px 8px; border-radius: 4px; }
         .val-normal { color: var(--text-main); }
 
-        #loading { text-align: center; padding: 100px; font-weight: 600; color: var(--text-muted); display: none; }
+        #loading { text-align: center; padding: 100px; font-weight: 600; color: var(--text-muted); display: block; }
         #no-results { grid-column: 1 / -1; text-align: center; padding: 80px; background: white; border-radius: 20px; display: none; }
 
         @media (max-width: 600px) {
@@ -372,69 +253,21 @@
 </head>
 <body>
 
-    <!-- Login Screen -->
-    <div id="login-screen">
-        <div class="login-card">
-            <div class="login-logos">
-                <img src="BESPL Logo.jpg" alt="BESPL" onerror="this.style.display='none'">
-                <img src="DBS Logo.jpg" alt="DBS" onerror="this.style.display='none'">
-                <img src="KAYPEE LOGO.jpg" alt="KAYPEE" onerror="this.style.display='none'">
-            </div>
-            
-            <h2>Login to your account</h2>
-
-            <!-- Step 1: User ID -->
-            <div id="step-userid">
-                <div class="input-group">
-                    <label>Domain ID (PP number) / PRM ID</label>
-                    <input type="text" id="userIdInput" class="login-input" placeholder="Enter Domain ID (PP number) / PRM ID">
-                </div>
-                <button class="login-btn" onclick="goToPassword()">Next ➔</button>
-            </div>
-
-            <!-- Step 2: Password (hidden initially) -->
-            <div id="step-password" style="display: none;">
-                <div class="user-display">
-                    <span id="display-user"></span>
-                    <span style="cursor:pointer; color:#2b3a8e" onclick="backToUser()">✏️</span>
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="passwordInput" class="login-input" placeholder="Enter password">
-                </div>
-                <button class="login-btn" onclick="attemptLogin()">Login ➔</button>
-                <div style="margin-top: 15px; text-align: right;">
-                    <a href="#" style="font-size: 0.75rem; color: #2b3a8e; text-decoration: none;">Reset Domain ID Password</a>
-                </div>
-            </div>
-
-            <div class="login-footer">
-                Need help in login? <a href="#">Contact Support</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Dashboard (hidden until login) -->
+    <!-- Main Dashboard -->
     <div id="main-dashboard">
+        <!-- Brand Header Section -->
         <div class="brand-section">
-            <div class="section-label">Our Groups & Valued Clients</div>
+            <div class="section-label">Our Groups</div>
             <div class="logo-container">
                 <div class="main-company-logos">
                     <img src="BESPL Logo.jpg" alt="BESPL" class="logo-item main-logo" onerror="this.style.display='none'">
                     <img src="DBS Logo.jpg" alt="DBS" class="logo-item main-logo" onerror="this.style.display='none'">
                     <img src="KAYPEE LOGO.jpg" alt="KAYPEE" class="logo-item main-logo" onerror="this.style.display='none'">
                 </div>
-                <div class="client-logos">
-                    <img src="B&R.png" alt="B&R" class="logo-item" title="B&R" onerror="this.style.display='none'">
-                    <img src="DCM Shriram.png" alt="DCM Shriram" class="logo-item" title="DCM Shriram" onerror="this.style.display='none'">
-                    <img src="GNFC.png" alt="GNFC" class="logo-item" title="GNFC" onerror="this.style.display='none'">
-                    <img src="HINDALCO.png" alt="HINDALCO" class="logo-item" title="HINDALCO" onerror="this.style.display='none'">
-                    <img src="ONGC.png" alt="ONGC" class="logo-item" title="ONGC" onerror="this.style.display='none'">
-                    <img src="RIL.png" alt="RIL" class="logo-item" title="RIL" onerror="this.style.display='none'">
-                </div>
             </div>
         </div>
 
+        <!-- Controls aur Search Filter Header -->
         <div class="header">
             <h1>🏗️ CRANE-FLEET <span style="color:var(--primary)">PRO</span></h1>
             
@@ -470,8 +303,10 @@
             </div>
         </div>
 
+        <!-- Loading state -->
         <div id="loading">Syncing Fleet Data...</div>
 
+        <!-- Cards Container -->
         <div class="container" id="card-container">
             <div id="no-results">
                 <h3>No matching vehicles found</h3>
@@ -482,51 +317,13 @@
     <script>
         const apiURL = 'https://script.google.com/macros/s/AKfycby3M69HaTJ4MoDdOqfn3HFnSBvbxTdSh1yohD1Oki0vrYwkYcWG75tSjekuIoDjua-gaA/exec';
         let fleetData = [];
-        
-        // Credentials
-        const VALID_USER = "";
-        const VALID_PASS = "";
 
-        // Login Logic
-        function goToPassword() {
-            const user = document.getElementById('userIdInput').value.trim();
-            if (user === VALID_USER) {
-                document.getElementById('step-userid').style.display = 'none';
-                document.getElementById('step-password').style.display = 'block';
-                document.getElementById('display-user').innerText = user;
-                document.getElementById('passwordInput').focus();
-            } else {
-                alert("Invalid User ID");
-            }
-        }
-
-        function backToUser() {
-            document.getElementById('step-userid').style.display = 'block';
-            document.getElementById('step-password').style.display = 'none';
-            document.getElementById('userIdInput').focus();
-        }
-
-        function attemptLogin() {
-            const pass = document.getElementById('passwordInput').value;
-            if (pass === VALID_PASS) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-dashboard').style.display = 'block';
-                document.getElementById('loading').style.display = 'block';
-                initDashboard();
-            } else {
-                alert("Incorrect Password");
-            }
-        }
-
-        // Allow 'Enter' key for login
-        document.getElementById('userIdInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') goToPassword();
-        });
-        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') attemptLogin();
+        // Page load hote hi API data sync karega aur screen par dikhayega
+        window.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
         });
 
-        // Dashboard Logic
+        // Main Dashboard Initialization Logic
         async function initDashboard() {
             try {
                 const response = await fetch(apiURL);
@@ -536,10 +333,11 @@
                 document.getElementById('totalVehicles').innerText = `Total: ${fleetData.length}`;
                 renderCards(fleetData);
             } catch (error) {
-                document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data.</span>`;
+                document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data. Please refresh again.</span>`;
             }
         }
 
+        // Dropdown filters ko dynamic fill karne ka logic
         function populateFilters(data) {
             const bodyTypes = new Set();
             const companies = new Set();
@@ -557,6 +355,7 @@
             });
         }
 
+        // Tareekh ko readable format mein badalne ka logic
         function formatDate(val, isMfgField = false) {
             if (!val || val === "—" || val === "") return "—";
             const raw = val.toString().trim();
@@ -574,6 +373,7 @@
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getFullYear()).slice(-2)}`;
         }
 
+        // Cards data create karne aur browser standard ke anusaar color set karne ka logic
         function renderCards(data) {
             const container = document.getElementById('card-container');
             const noResults = document.getElementById('no-results');
@@ -666,6 +466,7 @@
             updateShowingCount();
         }
 
+        // User filters aur search queries ko reflect karne ka tareeka
         function filterCards() {
             const search = document.getElementById('searchInput').value.toUpperCase();
             const expFilter = document.getElementById('expiryFilter').value;
@@ -703,6 +504,7 @@
             updateShowingCount();
         }
 
+        // Dikhe gaye total active cards ka total count nikalne ka tareeka
         function updateShowingCount() {
             const visible = document.querySelectorAll('.card:not([style*="display: none"])').length;
             const countEl = document.getElementById('showingCount');
