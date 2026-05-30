@@ -255,13 +255,13 @@
                             </div>
                         </div>
 
-                        <!-- Card 3: Expired / 10-Day Alert -->
+                        <!-- Card 3: Expired Docs (Strictly Expired now) -->
                         <div onclick="applyQuickFilter('expired')" class="cursor-pointer bg-slate-100 hover:bg-rose-50 border border-slate-200 p-3 rounded-xl transition duration-300 flex items-center gap-3 animate-pulse shadow-sm">
                             <div class="bg-rose-500/10 p-2 rounded-lg text-rose-600">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
                             <div>
-                                <p class="text-[10px] uppercase font-bold text-slate-500">Expired & Alerts</p>
+                                <p class="text-[10px] uppercase font-bold text-slate-500">Expired Docs</p>
                                 <h4 class="text-lg font-extrabold text-rose-600" id="expiredCount">--</h4>
                             </div>
                         </div>
@@ -463,7 +463,7 @@
                 if (isNotWorking) {
                     stats.maintenance++;
                 } else {
-                    // Check compliance document date expirations (including warnings within 10 days)
+                    // Check compliance document date expirations (strictly expired: diffDays < 0)
                     for (let key in item) {
                         const cleanKey = key.trim().toUpperCase();
                         let isCheckable = ["EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
@@ -477,11 +477,11 @@
                                     let checkDate = new Date(d);
                                     checkDate.setHours(0,0,0,0);
                                     
-                                    // Alert panel covers anything <= 10 days
                                     const diffTime = checkDate - today;
                                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                                     
-                                    if (diffDays <= 10) {
+                                    // Strictly Expired check for the stats indicator
+                                    if (diffDays < 0) {
                                         hasExpiredDoc = true;
                                     }
                                 }
@@ -727,13 +727,14 @@
                     cardGlowBorderClass = 'border-emerald-100 hover:border-emerald-300';
                 }
 
+                // FIXED data-expired-types to only contain strictly expired keys
                 const cardHtml = `
                     <div class="card premium-card glass-panel rounded-2xl flex flex-col justify-between ${cardGlowBorderClass}" 
                          data-regno="${regNo}" 
                          data-body="${bodyType}"
                          data-company="${company}"
-                         data-expired-types="${isNotWorking ? '' : [...new Set([...expiredKeys, ...warningKeys])].join(',')}"
-                         data-any-expired="${hasExpired || hasWarning}"
+                         data-expired-types="${isNotWorking ? '' : [...new Set(expiredKeys)].join(',')}"
+                         data-any-expired="${hasExpired}"
                          data-maintenance="${isNotWorking}">
                         
                         <!-- Card Header (Dynamic background contrast) -->
