@@ -3,341 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crane Fleet Dashboard Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Crane Fleet Dashboard Pro - Premium Enterprise</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts & FontAwesome Icons for Industrial Feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#fbbf24',
+                            neonBlue: '#0061ff',
+                            electricPurple: '#8b5cf6',
+                            premiumBg: '#f1f5f9'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary: #0061ff;
-            --primary-dark: #004ecc;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-        }
-
+        /* Permanent Vibrant Gradient Background Animation */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 0;
-            color: var(--text-main);
-            overflow-x: hidden;
+            background: radial-gradient(circle at 10% 20%, rgba(0, 97, 255, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                        #f1f5f9;
+            color: #0f172a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* --- Dashboard Styles --- */
-        #main-dashboard {
-            display: block; /* Sidhe visible rahega ab */
+        /* Glassmorphism Cards with high contrast white background and crisp shadows */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
         }
 
-        .header {
-            background: white;
-            padding: 20px 15px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .brand-section {
-            background: #fff;
-            padding: 15px 0;
-            border-bottom: 1px solid #e2e8f0;
+        /* Animated Highlight on hover */
+        .premium-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
             overflow: hidden;
         }
 
-        .logo-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center align kar diya kyunki ab sirf main groups hain */
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 0 15px;
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0061ff, #8b5cf6, #ff007f);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .main-company-logos {
-            display: flex;
-            gap: 25px;
-            padding-right: 0; /* Border aur extra padding hata di hai */
-        }
-
-        .logo-item {
-            height: 45px;
-            object-fit: contain;
-            transition: all 0.3s ease;
+        .premium-card:hover::before {
             opacity: 1;
         }
 
-        .logo-item:hover {
-            transform: scale(1.1);
+        .premium-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 97, 255, 0.1);
+            border-color: rgba(0, 97, 255, 0.3);
         }
 
-        .main-logo {
-            height: 60px;
+        /* Premium Logo Card Style */
+        .brand-badge {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
         }
 
-        .section-label {
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            text-align: center;
-            width: 100%;
+        .brand-badge:hover {
+            border-color: #0061ff;
+            box-shadow: 0 0 20px rgba(0, 97, 255, 0.15);
+            transform: translateY(-2px);
         }
 
-        h1 {
-            margin: 0 0 15px 0;
-            font-size: 1.5rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+        /* Sparking / Soft Glow Status Indicators */
+        .neon-glow-expired {
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+            animation: pulse-red 2s infinite alternate;
         }
 
-        .controls {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px;
-            justify-content: center;
+        .neon-glow-warning {
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+            animation: pulse-amber 2s infinite alternate;
         }
 
-        .search-wrapper {
-            position: relative;
-            grid-column: span 1;
+        .neon-glow-active {
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
         }
 
-        @media (min-width: 900px) {
-            .search-wrapper { grid-column: span 2; }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); }
+            100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
         }
 
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
+        @keyframes pulse-amber {
+            0% { box-shadow: 0 0 5px rgba(245, 158, 11, 0.2); }
+            100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
         }
 
-        .search-input, .filter-select {
-            width: 100%;
-            padding: 12px 15px 12px 45px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.2s;
-            background: #fff;
-            box-sizing: border-box;
-            height: 48px;
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 97, 255, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 97, 255, 0.5);
         }
 
-        .filter-select {
-            padding-left: 15px;
-            cursor: pointer;
-            font-weight: 600;
-            background-color: #f1f5f9;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2003/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 16px;
+        /* Custom spinner */
+        .crane-spinner {
+            border: 4px solid rgba(0, 97, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-left-color: #0061ff;
+            animation: spin 1s linear infinite;
         }
 
-        .stats-bar {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .counter {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--primary);
-            background: #eff6ff;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            padding: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-header {
-            padding: 15px 20px;
-            background: #f8fafc;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .reg-no { font-weight: 800; font-size: 1.15rem; color: #1e293b; }
-        
-        .status-badge {
-            font-size: 0.65rem;
-            padding: 4px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .status-expired { background: #fee2e2; color: #ef4444; }
-        .status-active { background: #dcfce7; color: #10b981; }
-        .status-maintenance { background: #f1f5f9; color: #64748b; }
-
-        .card-body { padding: 20px; }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #f1f5f9;
-        }
-
-        .info-row.hidden { display: none; }
-
-        .label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            max-width: 60%;
-        }
-
-        .value {
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-align: right;
-        }
-
-        .val-active { color: var(--success); }
-        .val-expired { color: var(--danger); background: #fee2e2; padding: 2px 8px; border-radius: 4px; }
-        .val-normal { color: var(--text-main); }
-
-        #loading { text-align: center; padding: 100px; font-weight: 600; color: var(--text-muted); display: block; }
-        #no-results { grid-column: 1 / -1; text-align: center; padding: 80px; background: white; border-radius: 20px; display: none; }
-
-        @media (max-width: 600px) {
-            .container { padding: 15px; }
-            .controls { grid-template-columns: 1fr; }
-            .main-company-logos { border-right: none; padding-right: 0; margin-bottom: 15px; }
-            .logo-container { justify-content: center; }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen pb-12 transition-colors duration-300">
 
-    <!-- Main Dashboard -->
+    <!-- Top Glow Line -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+
     <div id="main-dashboard">
-        <!-- Brand Header Section -->
-        <div class="brand-section">
-            <div class="section-label">Our Groups</div>
-            <div class="logo-container">
-                <div class="main-company-logos">
-                    <img src="BESPL Logo.jpg" alt="BESPL" class="logo-item main-logo" onerror="this.style.display='none'">
-                    <img src="DBS Logo.jpg" alt="DBS" class="logo-item main-logo" onerror="this.style.display='none'">
-                    <img src="KAYPEE LOGO.jpg" alt="KAYPEE" class="logo-item main-logo" onerror="this.style.display='none'">
+        
+        <!-- Top Info Header -->
+        <div class="max-w-7xl mx-auto px-4 pt-6 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="inline-block px-3 py-1.5 text-xs font-bold uppercase tracking-widest bg-blue-500/10 text-blue-600 rounded-lg border border-blue-500/20">
+                    Enterprise Portal
+                </span>
+            </div>
+            <div class="text-xs font-extrabold text-slate-500 tracking-wider">
+                <i class="far fa-calendar-alt mr-1"></i> Live Tracking Engine
+            </div>
+        </div>
+
+        <!-- Brand Header Section (Our Groups) -->
+        <div class="max-w-7xl mx-auto px-4 mt-4">
+            <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
+                <!-- Decorative absolute glow -->
+                <div class="absolute -right-16 -top-16 w-36 h-36 bg-blue-500/5 rounded-full blur-3xl"></div>
+                
+                <h3 class="text-center text-xs font-extrabold uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center justify-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                    Our Groups
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                </h3>
+                
+                <!-- Dynamic High-End Metallic Company Badges -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Company Card 1 -->
+                    <div class="brand-badge rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer min-h-[90px] group">
+                        <img src="BESPL Logo.jpg" alt="BESPL" class="h-12 object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.outerHTML='<span class=\'font-display font-extrabold text-2xl bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent\'>BESPL</span><span class=\'text-[10px] text-slate-500 font-bold mt-1\'>BHARAT EXPEDITION</span>'">
+                    </div>
+                    <!-- Company Card 2 -->
+                    <div class="brand-badge rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer min-h-[90px] group">
+                        <img src="DBS Logo.jpg" alt="DBS" class="h-12 object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.outerHTML='<span class=\'font-display font-extrabold text-2xl bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent\'>DBS</span><span class=\'text-[10px] text-slate-500 font-bold mt-1\'>DBS CRANES</span>'">
+                    </div>
+                    <!-- Company Card 3 -->
+                    <div class="brand-badge rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer min-h-[90px] group">
+                        <img src="KAYPEE LOGO.jpg" alt="KAYPEE" class="h-12 object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.outerHTML='<span class=\'font-display font-extrabold text-2xl bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent\'>KAYPEE</span><span class=\'text-[10px] text-slate-500 font-bold mt-1\'>KAYPEE ENTERPRISES</span>'">
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Controls aur Search Filter Header -->
-        <div class="header">
-            <h1>🏗️ CRANE-FLEET <span style="color:var(--primary)">PRO</span></h1>
-            
-            <div class="controls">
-                <div class="search-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search Reg. No..." onkeyup="filterCards()">
+        <!-- Expiries Reminder Drawer/Panel (Vibrant Light Amber warning style) -->
+        <div id="expiry-alert-panel" class="max-w-7xl mx-auto px-4 mt-6 hidden">
+            <div class="bg-amber-500/10 border-2 border-amber-400/40 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+                <div class="flex items-center justify-between mb-3 border-b border-amber-500/20 pb-2">
+                    <h4 class="font-display font-bold text-sm text-amber-800 flex items-center gap-2">
+                        <span class="relative flex h-3.5 w-3.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
+                        </span>
+                        <span>🔔 UPCOMING COMPLIANCE ALERTS (EXPIRING IN 10 DAYS)</span>
+                    </h4>
+                    <span id="alerts-count-badge" class="text-xs font-black bg-amber-500 text-slate-900 px-2.5 py-0.5 rounded-full">-- Alerts</span>
                 </div>
                 
-                <select id="expiryFilter" class="filter-select" onchange="filterCards()">
-                    <option value="all">📂 ALL DOCUMENTS</option>
-                    <option value="puc">⚠️ PUC VALID UP TO</option>
-                    <option value="insurance">🛡️ INSURANCE VALID UP TO</option>
-                    <option value="fitness">🔧 FITNESS VALID UP TO</option>
-                    <option value="permit">📝 ROAD TAX VALID UP TO</option>
-                    <option value="form10">📄 FORM-10 VALID UP TO</option>
-                    <option value="validupto">📅 PERMIT VALID UP TO</option>
-                    <option value="any">🚨 ANY EXPIRED</option>
-                </select>
-
-                <select id="bodyFilter" class="filter-select" onchange="filterCards()">
-                    <option value="all">🚜 ALL BODY TYPES</option>
-                </select>
-
-                <select id="companyFilter" class="filter-select" onchange="filterCards()">
-                    <option value="all">🏢 ALL COMPANIES</option>
-                </select>
-            </div>
-
-            <div class="stats-bar">
-                <div class="counter" id="totalVehicles">Total: --</div>
-                <div class="counter" id="showingCount">Showing: --</div>
+                <!-- Reminder items container -->
+                <div id="expiry-alerts-list" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scroll-smooth max-h-[140px] flex-nowrap pr-2">
+                    <!-- Reminders load here dynamically -->
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2"><i class="fas fa-info-circle mr-1"></i> Quick Action: Click any card above to quickly search and review that vehicle's compliance dossier.</p>
             </div>
         </div>
 
-        <!-- Loading state -->
-        <div id="loading">Syncing Fleet Data...</div>
+        <!-- Main Premium Control Center -->
+        <div class="max-w-7xl mx-auto px-4 mt-6">
+            <div class="glass-panel rounded-3xl p-6 sm:p-8">
+                <!-- Header Title -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 class="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">🏗️ CRANE-FLEET</span>
+                            <span class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-3 py-1.5 rounded-lg tracking-wider uppercase font-sans">PRO ENTERPRISE</span>
+                        </h1>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-1">Real-time dynamic compliance tracking, insurance audit & analytical engine.</p>
+                    </div>
+                    
+                    <!-- Dynamic Quick Action Metrics (Clickable to Filter!) -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full md:w-auto">
+                        <!-- Card 1: Total Fleet -->
+                        <div onclick="applyQuickFilter('all')" class="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-200 p-3 rounded-xl transition duration-300 flex items-center gap-3 shadow-sm">
+                            <div class="bg-blue-500/10 p-2 rounded-lg text-blue-600">
+                                <i class="fas fa-truck-monster"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-500">Total Fleet</p>
+                                <h4 class="text-lg font-extrabold text-slate-900" id="totalVehicles">--</h4>
+                            </div>
+                        </div>
 
-        <!-- Cards Container -->
-        <div class="container" id="card-container">
-            <div id="no-results">
-                <h3>No matching vehicles found</h3>
+                        <!-- Card 2: Active -->
+                        <div onclick="applyQuickFilter('active')" class="cursor-pointer bg-slate-100 hover:bg-emerald-50 border border-slate-200 p-3 rounded-xl transition duration-300 flex items-center gap-3 shadow-sm">
+                            <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-600">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-500">Fully Active</p>
+                                <h4 class="text-lg font-extrabold text-emerald-600" id="activeCount">--</h4>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Expired / 10-Day Alert -->
+                        <div onclick="applyQuickFilter('expired')" class="cursor-pointer bg-slate-100 hover:bg-rose-50 border border-slate-200 p-3 rounded-xl transition duration-300 flex items-center gap-3 animate-pulse shadow-sm">
+                            <div class="bg-rose-500/10 p-2 rounded-lg text-rose-600">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-500">Expired & Alerts</p>
+                                <h4 class="text-lg font-extrabold text-rose-600" id="expiredCount">--</h4>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Not Working -->
+                        <div onclick="applyQuickFilter('maintenance')" class="cursor-pointer bg-slate-100 hover:bg-amber-50 border border-slate-200 p-3 rounded-xl transition duration-300 flex items-center gap-3 shadow-sm">
+                            <div class="bg-slate-200 p-2 rounded-lg text-slate-700">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-500">Not Working</p>
+                                <h4 class="text-lg font-extrabold text-slate-700" id="maintenanceCount">--</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                    <!-- Search Input -->
+                    <div class="md:col-span-5 relative">
+                        <span class="absolute inset-y-0 left-4 flex items-center text-slate-500">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" 
+                               class="w-full bg-white border border-slate-300 focus:border-blue-500 text-slate-900 placeholder-slate-400 rounded-xl py-3 pl-11 pr-4 text-sm font-semibold focus:ring-1 focus:ring-blue-500 outline-none transition duration-300" 
+                               placeholder="Type registration number to instantly search..." onkeyup="filterCards()">
+                    </div>
+
+                    <!-- Dropdown 1: Expire (Vibrant & Exact Emoji/Label Matching) -->
+                    <div class="md:col-span-3 relative">
+                        <select id="expiryFilter" onchange="filterCards()"
+                                class="w-full bg-white border border-slate-300 focus:border-blue-500 text-slate-850 rounded-xl py-3 px-4 text-sm font-bold focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer appearance-none">
+                            <option value="all">📂 ALL COMPLIANCE</option>
+                            <option value="puc">⚠️ PUC VALID UP TO</option>
+                            <option value="insurance">🛡️ INSURANCE VALID UP TO</option>
+                            <option value="fitness">🔧 FITNESS VALID UP TO</option>
+                            <option value="permit">📝 ROAD TAX VALID UP TO</option>
+                            <option value="form10">📄 FORM-10 VALID UP TO</option>
+                            <option value="validupto">📅 PERMIT VALID UP TO</option>
+                            <option value="any">🚨 ANY EXPIRED</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </span>
+                    </div>
+
+                    <!-- Dropdown 2: Body Types -->
+                    <div class="md:col-span-2 relative">
+                        <select id="bodyFilter" onchange="filterCards()"
+                                class="w-full bg-white border border-slate-300 focus:border-blue-500 text-slate-800 rounded-xl py-3 px-4 text-sm font-semibold focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer appearance-none">
+                            <option value="all">🚜 ALL BODY TYPES</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </span>
+                    </div>
+
+                    <!-- Dropdown 3: Companies -->
+                    <div class="md:col-span-2 relative">
+                        <select id="companyFilter" onchange="filterCards()"
+                                class="w-full bg-white border border-slate-300 focus:border-blue-500 text-slate-800 rounded-xl py-3 px-4 text-sm font-semibold focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer appearance-none">
+                            <option value="all">🏢 ALL COMPANIES</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Live Showing Badge Status -->
+                <div class="flex justify-between items-center mt-5 px-1">
+                    <span class="text-xs font-semibold text-slate-600 uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                        Automated Live Feed System
+                    </span>
+                    <span id="showingCount" class="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+                        Showing: --
+                    </span>
+                </div>
+
             </div>
         </div>
+
+        <!-- Loader Section -->
+        <div id="loading" class="max-w-7xl mx-auto px-4 mt-12 flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
+            <div class="crane-spinner mb-4"></div>
+            <h3 class="font-display font-bold text-lg text-slate-800">Syncing Enterprise Fleet Data</h3>
+            <p class="text-xs text-slate-500 mt-1">Downloading encrypted data blocks from live spreadsheet secure server...</p>
+        </div>
+
+        <!-- Premium Cards Grid -->
+        <div class="max-w-7xl mx-auto px-4 mt-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="card-container">
+                <!-- No Results fallback built into card rendering -->
+                <div id="no-results" class="hidden col-span-full py-20 text-center glass-panel rounded-3xl">
+                    <div class="text-slate-600 mb-4 text-5xl">
+                        <i class="fas fa-search-minus"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-slate-800">No Vehicles Match Your Filter</h3>
+                    <p class="text-sm text-slate-500 mt-1">Please try searching with different registration keywords or resetting filters.</p>
+                    <button onclick="resetFilters()" class="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-xs px-5 py-2.5 rounded-lg uppercase tracking-wider hover:opacity-90 transition shadow">
+                        Reset All Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Script Block -->
     <script>
         const apiURL = 'https://script.google.com/macros/s/AKfycby3M69HaTJ4MoDdOqfn3HFnSBvbxTdSh1yohD1Oki0vrYwkYcWG75tSjekuIoDjua-gaA/exec';
         let fleetData = [];
 
-        // Page load hote hi API data sync karega aur screen par dikhayega
+        // Dynamic State Tracker for Statistics Counters
+        let stats = {
+            total: 0,
+            active: 0,
+            expired: 0,
+            maintenance: 0 // Will display as "Not Working"
+        };
+
+        // Initialize App & Force Permanent Light Theme
         window.addEventListener('DOMContentLoaded', () => {
+            // Remove dark mode config from document to lock light theme
+            document.documentElement.classList.remove('dark');
             initDashboard();
         });
 
-        // Main Dashboard Initialization Logic
+        // Main Sync Data Execution
         async function initDashboard() {
             try {
                 const response = await fetch(apiURL);
                 fleetData = await response.json();
                 document.getElementById('loading').style.display = 'none';
+                
                 populateFilters(fleetData);
-                document.getElementById('totalVehicles').innerText = `Total: ${fleetData.length}`;
+                calculateFleetStats(fleetData);
                 renderCards(fleetData);
+                generateExpiryAlerts(fleetData);
             } catch (error) {
-                document.getElementById('loading').innerHTML = `<span style="color:red">❌ Failed to load data. Please refresh again.</span>`;
+                document.getElementById('loading').innerHTML = `
+                    <div class="text-center py-6">
+                        <span class="inline-block p-4 bg-rose-500/10 text-rose-600 rounded-full text-2xl mb-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                        <h3 class="font-display font-bold text-lg text-rose-600">Failed to Sync Data</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-4">Please verify connection or check cloud spreadsheet trigger settings.</p>
+                        <button onclick="window.location.reload()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg uppercase tracking-wider transition">
+                            Retry Sync Connection
+                        </button>
+                    </div>`;
             }
         }
 
-        // Dropdown filters ko dynamic fill karne ka logic
+        // Build Dynamic Filters List
         function populateFilters(data) {
             const bodyTypes = new Set();
             const companies = new Set();
@@ -345,8 +426,10 @@
                 if (item["EQUIPMENT BODY"]) bodyTypes.add(item["EQUIPMENT BODY"].toString().trim());
                 if (item["COMPANY"]) companies.add(item["COMPANY"].toString().trim());
             });
+            
             const bodyDropdown = document.getElementById('bodyFilter');
             const companyDropdown = document.getElementById('companyFilter');
+            
             [...bodyTypes].sort().forEach(type => {
                 if (type) bodyDropdown.innerHTML += `<option value="${type}">${type.toUpperCase()}</option>`;
             });
@@ -355,7 +438,150 @@
             });
         }
 
-        // Tareekh ko readable format mein badalne ka logic
+        // Calculate and display Fleet Stats Metrics
+        function calculateFleetStats(data) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            stats.total = data.length;
+            stats.active = 0;
+            stats.expired = 0;
+            stats.maintenance = 0;
+
+            data.forEach(item => {
+                let isNotWorking = false;
+                let hasExpiredDoc = false;
+
+                // Checking maintenance (Not Working) flags
+                for (let key in item) {
+                    if (item[key] && item[key].toString().trim().toUpperCase() === 'Y') {
+                        isNotWorking = true;
+                        break;
+                    }
+                }
+
+                if (isNotWorking) {
+                    stats.maintenance++;
+                } else {
+                    // Check compliance document date expirations (including warnings within 10 days)
+                    for (let key in item) {
+                        const cleanKey = key.trim().toUpperCase();
+                        let isCheckable = ["EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
+                        let isRegistrationDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE") || cleanKey.includes("REGISTRATION DATE");
+                        
+                        if (isCheckable && !isRegistrationDate && item[key]) {
+                            const rawVal = item[key].toString().trim();
+                            if (rawVal !== "—" && rawVal !== "" && rawVal.toUpperCase() !== "LTT") {
+                                const d = new Date(rawVal);
+                                if (!isNaN(d.getTime())) {
+                                    let checkDate = new Date(d);
+                                    checkDate.setHours(0,0,0,0);
+                                    
+                                    // Alert panel covers anything <= 10 days
+                                    const diffTime = checkDate - today;
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    
+                                    if (diffDays <= 10) {
+                                        hasExpiredDoc = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (hasExpiredDoc) {
+                        stats.expired++;
+                    } else {
+                        stats.active++;
+                    }
+                }
+            });
+
+            // Set text on UI elements
+            document.getElementById('totalVehicles').innerText = stats.total;
+            document.getElementById('activeCount').innerText = stats.active;
+            document.getElementById('expiredCount').innerText = stats.expired;
+            document.getElementById('maintenanceCount').innerText = stats.maintenance;
+        }
+
+        // NEW: Generate Expiry and Warning alerts bar for next 10 days only (past expired items removed)
+        function generateExpiryAlerts(data) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            const alertsList = document.getElementById('expiry-alerts-list');
+            const alertPanel = document.getElementById('expiry-alert-panel');
+            const countBadge = document.getElementById('alerts-count-badge');
+            
+            alertsList.innerHTML = '';
+            let alertsCount = 0;
+
+            data.forEach(item => {
+                const regNo = (item["REGN NO"] || "UNKNOWN").toString().toUpperCase();
+                const company = (item["COMPANY"] || "FLEET").toString().toUpperCase();
+                
+                // Skip if Not Working
+                let isNotWorking = false;
+                for (let key in item) {
+                    if (item[key] && item[key].toString().trim().toUpperCase() === 'Y') {
+                        isNotWorking = true;
+                        break;
+                    }
+                }
+                if (isNotWorking) return;
+
+                // Evaluate dates
+                for (let key in item) {
+                    const cleanKey = key.trim().toUpperCase();
+                    let isCheckable = ["EXP", "VALID", "FITNESS", "INSURANCE", "PERMIT", "PUC", "FORM-10", "TAX"].some(k => cleanKey.includes(k));
+                    let isRegistrationDate = cleanKey.includes("REG DATE") || cleanKey.includes("REGN DATE") || cleanKey.includes("REGISTRATION DATE");
+                    
+                    if (isCheckable && !isRegistrationDate && item[key]) {
+                        const rawVal = item[key].toString().trim();
+                        if (rawVal !== "—" && rawVal !== "" && rawVal.toUpperCase() !== "LTT") {
+                            const d = new Date(rawVal);
+                            if (!isNaN(d.getTime())) {
+                                let checkDate = new Date(d);
+                                checkDate.setHours(0,0,0,0);
+                                
+                                const diffTime = checkDate - today;
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                // Target items expiring strictly between today (0 days) and next 10 days (10 days)
+                                if (diffDays >= 0 && diffDays <= 10) {
+                                    alertsCount++;
+                                    let urgencyClass = "bg-amber-50 border-amber-300 text-amber-800";
+                                    let badgeLabel = diffDays === 0 ? "TODAY" : `IN ${diffDays} DAYS`;
+
+                                    const alertHtml = `
+                                        <div onclick="focusVehicle('${regNo}')" class="flex-none w-[220px] p-3 rounded-xl border cursor-pointer hover:shadow-md transition-all duration-300 ${urgencyClass}">
+                                            <div class="flex justify-between items-start mb-1">
+                                                <span class="text-[10px] uppercase font-black tracking-wider opacity-75">${company}</span>
+                                                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-amber-500 text-slate-900">${badgeLabel}</span>
+                                            </div>
+                                            <h5 class="font-display font-black text-sm tracking-tight text-slate-900">${regNo}</h5>
+                                            <p class="text-[10px] mt-1 font-semibold truncate">
+                                                <i class="fas fa-exclamation-circle mr-1"></i> ${key}
+                                            </p>
+                                        </div>
+                                    `;
+                                    alertsList.insertAdjacentHTML('beforeend', alertHtml);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (alertsCount > 0) {
+                alertPanel.classList.remove('hidden');
+                countBadge.innerText = `${alertsCount} Upcoming Alerts`;
+            } else {
+                alertPanel.classList.add('hidden');
+            }
+        }
+
+        // Utility to convert dates gracefully
         function formatDate(val, isMfgField = false) {
             if (!val || val === "—" || val === "") return "—";
             const raw = val.toString().trim();
@@ -370,15 +596,28 @@
             }
             const d = new Date(val);
             if (isNaN(d.getTime())) return val;
-            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getFullYear()).slice(-2)}`;
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getFullYear())}`;
         }
 
-        // Cards data create karne aur browser standard ke anusaar color set karne ka logic
+        // Dynamic Icon mapping for compliance attributes
+        function getIconForKey(key) {
+            const k = key.toUpperCase();
+            if (k.includes("PUC")) return '<i class="fas fa-smog text-cyan-500 mr-2"></i>';
+            if (k.includes("INSURANCE")) return '<i class="fas fa-shield-alt text-blue-500 mr-2"></i>';
+            if (k.includes("FITNESS")) return '<i class="fas fa-wrench text-amber-500 mr-2"></i>';
+            if (k.includes("FORM-10")) return '<i class="fas fa-file-contract text-purple-500 mr-2"></i>';
+            if (k.includes("PERMIT") || k.includes("TAX")) return '<i class="fas fa-file-invoice text-emerald-500 mr-2"></i>';
+            return '<i class="fas fa-file-alt text-slate-400 mr-2"></i>';
+        }
+
+        // Beautiful Render Strategy
         function renderCards(data) {
             const container = document.getElementById('card-container');
             const noResults = document.getElementById('no-results');
             const today = new Date();
             today.setHours(0,0,0,0);
+            
+            // Retain non-cards and reset Grid
             container.innerHTML = '';
             container.appendChild(noResults);
 
@@ -389,6 +628,7 @@
                 
                 let cardContent = '';
                 let expiredKeys = []; 
+                let warningKeys = []; // 10-days warnings
                 let isNotWorking = false;
 
                 for (let key in item) {
@@ -414,11 +654,14 @@
                     else if (cleanKey.includes("INSURANCE")) typeClass = "type-insurance";
                     else if (cleanKey.includes("FITNESS")) typeClass = "type-fitness";
                     else if (cleanKey.includes("FORM-10")) typeClass = "type-form10";
-                    else if (cleanKey.includes("VALID UP TO")) typeClass = "type-validupto";
-                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("TAX")) typeClass = "type-permit";
+                    // FIRST CHECK: Specific Road Tax attributes
+                    else if (cleanKey.includes("TAX") || cleanKey.includes("ROAD TAX")) typeClass = "type-permit";
+                    // SECOND CHECK: Permit and generalized expiry dates (PERMIT, VALID UP TO)
+                    else if (cleanKey.includes("PERMIT") || cleanKey.includes("VALID UP TO")) typeClass = "type-validupto";
 
                     let displayVal = rawVal;
-                    let valueClass = "val-normal";
+                    let valueClass = "text-slate-800";
+                    let bgStatusClass = "bg-transparent";
 
                     if (isYearOfMfg) {
                         displayVal = formatDate(rawVal, true);
@@ -429,44 +672,124 @@
                             if (isCheckable && !isRegistrationDate) {
                                 let checkDate = new Date(d);
                                 checkDate.setHours(0,0,0,0);
-                                if (checkDate < today && !isNotWorking) {
-                                    valueClass = "val-expired";
+                                
+                                const diffTime = checkDate - today;
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                if (diffDays < 0 && !isNotWorking) {
+                                    // Expired Status
+                                    valueClass = "text-rose-600 font-extrabold";
+                                    bgStatusClass = "bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20";
                                     expiredKeys.push(typeClass.replace('type-', ''));
+                                } else if (diffDays >= 0 && diffDays <= 10 && !isNotWorking) {
+                                    // Warning Status (Expiring in <= 10 Days)
+                                    valueClass = "text-amber-600 font-extrabold";
+                                    bgStatusClass = "bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20";
+                                    warningKeys.push(typeClass.replace('type-', ''));
                                 } else {
-                                    valueClass = "val-active";
+                                    // Healthy Status
+                                    valueClass = "text-emerald-600 font-bold";
+                                    bgStatusClass = "bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15";
                                 }
                             }
                         }
                     }
 
-                    cardContent += `<div class="info-row ${typeClass}">
-                        <span class="label">${key}</span>
-                        <span class="value ${valueClass}">${displayVal}</span>
+                    // Wrap elements inside interactive rows with strict light colors
+                    cardContent += `
+                    <div class="info-row ${typeClass} flex justify-between items-center py-2.5 border-b border-slate-200 hover:bg-slate-50 px-1 rounded transition duration-200">
+                        <span class="label text-xs text-slate-500 uppercase tracking-wider flex items-center font-semibold">
+                            ${getIconForKey(key)}
+                            ${key}
+                        </span>
+                        <span class="value text-xs font-extrabold ${valueClass} ${bgStatusClass}">${displayVal}</span>
                     </div>`;
                 });
 
-                const hasAction = expiredKeys.length > 0 && !isNotWorking;
+                const hasExpired = expiredKeys.length > 0 && !isNotWorking;
+                const hasWarning = warningKeys.length > 0 && !isNotWorking;
+                
+                // Set Premium Status Badges
+                let statusBadgeHtml = '';
+                let cardGlowBorderClass = 'border-slate-200';
+
+                if (isNotWorking) {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-300 uppercase tracking-widest"><i class="fas fa-ban"></i> Not Working</span>`;
+                    cardGlowBorderClass = 'border-slate-300 hover:border-slate-400';
+                } else if (hasExpired) {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-300 neon-glow-expired uppercase tracking-widest"><i class="fas fa-exclamation-triangle"></i> EXPIRED</span>`;
+                    cardGlowBorderClass = 'border-rose-200 hover:border-rose-400';
+                } else if (hasWarning) {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-300 neon-glow-warning uppercase tracking-widest"><i class="fas fa-bell"></i> WARNING (10D)</span>`;
+                    cardGlowBorderClass = 'border-amber-200 hover:border-amber-400';
+                } else {
+                    statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 neon-glow-active uppercase tracking-widest"><i class="fas fa-check"></i> ACTIVE</span>`;
+                    cardGlowBorderClass = 'border-emerald-100 hover:border-emerald-300';
+                }
+
                 const cardHtml = `
-                    <div class="card" 
+                    <div class="card premium-card glass-panel rounded-2xl flex flex-col justify-between ${cardGlowBorderClass}" 
                          data-regno="${regNo}" 
                          data-body="${bodyType}"
                          data-company="${company}"
-                         data-expired-types="${isNotWorking ? '' : [...new Set(expiredKeys)].join(',')}"
-                         data-any-expired="${hasAction}">
-                        <div class="card-header">
-                            <span class="reg-no">${regNo}</span>
-                            <span class="status-badge ${isNotWorking ? 'status-maintenance' : (hasAction ? 'status-expired' : 'status-active')}">
-                                ${isNotWorking ? 'Not Working' : (hasAction ? 'Expired' : 'Active')}
+                         data-expired-types="${isNotWorking ? '' : [...new Set([...expiredKeys, ...warningKeys])].join(',')}"
+                         data-any-expired="${hasExpired || hasWarning}"
+                         data-maintenance="${isNotWorking}">
+                        
+                        <!-- Card Header (Dynamic background contrast) -->
+                        <div class="p-5 border-b border-slate-100 bg-slate-50 rounded-t-2xl flex justify-between items-center">
+                            <div>
+                                <span class="text-xs uppercase font-extrabold tracking-widest text-slate-500 block mb-0.5">${company || 'FLEET REG'}</span>
+                                <span class="reg-no font-display font-black text-xl text-slate-800 tracking-tight hover:text-blue-600 transition">${regNo}</span>
+                            </div>
+                            <div>
+                                ${statusBadgeHtml}
+                            </div>
+                        </div>
+                        
+                        <!-- Card Body (Data fields) -->
+                        <div class="card-body p-5 flex-grow space-y-1">
+                            ${cardContent}
+                        </div>
+
+                        <!-- Card Footer Custom interactive actions -->
+                        <div class="p-4 bg-slate-50/50 border-t border-slate-100 rounded-b-2xl flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                <i class="fas fa-truck mr-1.5"></i> ${bodyType || 'HEAVY CRANE'}
+                            </span>
+                            <span class="text-[10px] text-blue-600 font-bold tracking-widest hover:underline cursor-pointer flex items-center gap-1" onclick="focusVehicle('${regNo}')">
+                                COMPLIANCE DOSSIER <i class="fas fa-arrow-right"></i>
                             </span>
                         </div>
-                        <div class="card-body">${cardContent}</div>
                     </div>`;
                 container.insertAdjacentHTML('beforeend', cardHtml);
             });
             updateShowingCount();
         }
 
-        // User filters aur search queries ko reflect karne ka tareeka
+        // Focus, search, and visually highlight a particular vehicle from alerts
+        function focusVehicle(regNo) {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = regNo;
+            filterCards();
+            
+            // Find the active element and apply temporary flashy highlight
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.card');
+                cards.forEach(card => {
+                    const reg = card.getAttribute('data-regno');
+                    if (reg === regNo) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.classList.add('ring-4', 'ring-blue-500', 'scale-105');
+                        setTimeout(() => {
+                            card.classList.remove('ring-4', 'ring-blue-500', 'scale-105');
+                        }, 2500);
+                    }
+                });
+            }, 100);
+        }
+
+        // Filter Logic
         function filterCards() {
             const search = document.getElementById('searchInput').value.toUpperCase();
             const expFilter = document.getElementById('expiryFilter').value;
@@ -492,23 +815,102 @@
                     visibleCount++;
                     const rows = card.querySelectorAll('.info-row');
                     rows.forEach(row => {
-                        if (expFilter === 'all' || expFilter === 'any') row.classList.remove('hidden');
-                        else {
-                            if (row.classList.contains(`type-${expFilter}`)) row.classList.remove('hidden');
-                            else row.classList.add('hidden');
+                        if (expFilter === 'all' || expFilter === 'any') {
+                            row.classList.remove('hidden');
+                        } else {
+                            if (row.classList.contains(`type-${expFilter}`)) {
+                                row.classList.remove('hidden');
+                            } else {
+                                row.classList.add('hidden');
+                            }
                         }
                     });
-                } else card.style.display = 'none';
+                } else {
+                    card.style.display = 'none';
+                }
             });
+            
             document.getElementById('no-results').style.display = (visibleCount === 0) ? 'block' : 'none';
             updateShowingCount();
         }
 
-        // Dikhe gaye total active cards ka total count nikalne ka tareeka
+        // Interactive Stats counters filter action
+        function applyQuickFilter(type) {
+            // Reset searches and filters
+            document.getElementById('searchInput').value = '';
+            document.getElementById('bodyFilter').value = 'all';
+            document.getElementById('companyFilter').value = 'all';
+            
+            const expirySelect = document.getElementById('expiryFilter');
+            const cards = document.querySelectorAll('.card');
+            let visibleCount = 0;
+
+            if (type === 'all') {
+                expirySelect.value = 'all';
+                cards.forEach(card => {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                    card.querySelectorAll('.info-row').forEach(r => r.classList.remove('hidden'));
+                });
+            } else if (type === 'active') {
+                expirySelect.value = 'all';
+                cards.forEach(card => {
+                    const isAnyExp = card.getAttribute('data-any-expired') === 'true';
+                    const isMaint = card.getAttribute('data-maintenance') === 'true';
+                    if (!isAnyExp && !isMaint) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                    card.querySelectorAll('.info-row').forEach(r => r.classList.remove('hidden'));
+                });
+            } else if (type === 'expired') {
+                expirySelect.value = 'any';
+                cards.forEach(card => {
+                    const isAnyExp = card.getAttribute('data-any-expired') === 'true';
+                    const isMaint = card.getAttribute('data-maintenance') === 'true';
+                    if (isAnyExp && !isMaint) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            } else if (type === 'maintenance') {
+                expirySelect.value = 'all';
+                cards.forEach(card => {
+                    const isMaint = card.getAttribute('data-maintenance') === 'true';
+                    if (isMaint) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                    card.querySelectorAll('.info-row').forEach(r => r.classList.remove('hidden'));
+                });
+            }
+
+            document.getElementById('no-results').style.display = (visibleCount === 0) ? 'block' : 'none';
+            updateShowingCount();
+        }
+
+        // Clear and Reset Action
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('expiryFilter').value = 'all';
+            document.getElementById('bodyFilter').value = 'all';
+            document.getElementById('companyFilter').value = 'all';
+            filterCards();
+        }
+
+        // Update Counter Display
         function updateShowingCount() {
             const visible = document.querySelectorAll('.card:not([style*="display: none"])').length;
             const countEl = document.getElementById('showingCount');
-            if(countEl) countEl.innerText = `Showing: ${visible}`;
+            if (countEl) {
+                countEl.innerHTML = `<i class="fas fa-filter mr-1.5 animate-bounce"></i> Active Fleet Items: ${visible}`;
+            }
         }
     </script>
 </body>
